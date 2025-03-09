@@ -49,7 +49,7 @@ classifiers = [
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
-    
+
 ]  # TODO: add all relevant classifiers for this project
 # Include non-python files in a python library/package
 # TODO: add all relevant resource handles below in the format <src-python-module> = [<glob-pattern>]
@@ -85,6 +85,7 @@ pytest-mock = ">=3.9"
 pytest-randomly = ">=3.12"
 pytest-xdist = { version = ">=3.1", extras = ["psutil"] }
 urllib3 = "<2.3"  # see https://github.com/gabrielfalcao/HTTPretty/issues/484
+pytest-asyncio = "^0.25.3"
 
 [tool.poetry.group.typing.dependencies]
 mypy = ">=1.8.0"
@@ -139,6 +140,7 @@ isort = { known-first-party = ['.', '**/test', '**/tests'] }
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
+'examples/*' = ['D100', 'F811', 'F821']
 'docs/*' = ['D']
 '**/*__init__.py' = ['F401', 'F405', 'F403', 'D']
 '**/test/*' = ['D']

@@ -11,13 +11,8 @@ TODO: write short description of project
 - Created by First Last (TODO: substitute placeholders with your information)
 - Maintained by First Last (TODO: substitute placeholders with person's information, or delete)
 """
-import sys
 
-if sys.version_info < (3, 10):
-    # Compatibility for python <3.10
-    import importlib_metadata as metadata
-else:
-    from importlib import metadata
+from importlib import metadata
 
 package_name = 'example-library'  # TODO: substitute placeholder with package name
 __version__ = metadata.version(package_name)

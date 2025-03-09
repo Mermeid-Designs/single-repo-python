@@ -1,34 +1,25 @@
-name: Set PR reviewers and assignees
+name: PR Assignee Management
 
 on:
   pull_request:
-    types: [ready_for_review]
-
-env:
-  BASE_BRANCH: main
-  GIT_AUTHOR_NAME: ${{ github.repository_owner }}
-  GIT_AUTHOR_EMAIL: ${{ github.repository_owner }}@users.noreply.github.com
-  THIS_REPO: ${{ github.repository }}
-  PR_NUMBER: ${{ github.event.number }}
-
+    types: [opened, synchronize, edited, ready_for_review]
 
 jobs:
-  reviewers:
-    name: Automatically set reviewers and assignees
+  main:
+    name: Automatically add assignees on PRs
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
-      repository-projects: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Edit pull request
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_USER: ${{ github.actor }}
+          PR_NUMBER: ${{ github.event.number }}
         run: |
-          pushd ${THIS_REPO}
           gh pr edit ${PR_NUMBER} \
             --add-assignee ${GITHUB_USER}
-            # --add-reviewer 
-          popd

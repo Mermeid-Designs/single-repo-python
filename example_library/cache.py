@@ -10,19 +10,19 @@ Defines the decorator functions to support saving and loading output to files.
 - pickle_cache
 
 @section libraries_cache Libraries/Modules
-- [`functools`](https://docs.python.org/3/library/functools.html) standard library 
+- [`functools`](https://docs.python.org/3/library/functools.html) standard library
   - Access to `wraps` function
-- [`logging`](https://docs.python.org/3/library/logging.html) standard library 
+- [`logging`](https://docs.python.org/3/library/logging.html) standard library
   - Access to `exception` function
-- [`numpy`](https://numpy.org/doc/) library 
+- [`numpy`](https://numpy.org/doc/) library
   - Access to saving functions and loading functions
-- [`pathlib`](https://docs.python.org/3/library/pathlib.html) standard library 
+- [`pathlib`](https://docs.python.org/3/library/pathlib.html) standard library
   - Access to `Path(...).is_file` function
   - Access to `Path(...).open` function
-- [`pickle`](https://docs.python.org/3/library/pickle.html) standard library 
+- [`pickle`](https://docs.python.org/3/library/pickle.html) standard library
   - Access to `dump` function.
   - Access to `load` function.
-- [`typing`](https://docs.python.org/3/library/typing.html) standard library 
+- [`typing`](https://docs.python.org/3/library/typing.html) standard library
   - Access to `Callable` type hint.
 
 @section notes_cache Notes

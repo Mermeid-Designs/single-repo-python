@@ -1,57 +1,22 @@
 sources = .
 
-.PHONY: .pre-commit  ## Check that pre-commit is installed
-.pre-commit:
-	@pre-commit -V || pip install pre-commit
-
-.PHONY: .ruff  ## Check that ruff is installed
-.ruff:
-	@ruff -V || pip install ruff
-
-.PHONY: .black  ## Check that black is installed
-.black:
-	@black -v || echo 'Please install black: https://github.com/psf/black'
-
-.PHONY: .pytest  ## Check that pytest is installed
-.pytest:
-	@pytest -V || pip install pytest
-
-.PHONY: .pytest-asyncio  ## Check that pytest is installed
-.pytest-asyncio:
-	@pip list | grep -i pytest-asyncio || pip install pytest-asyncio
-
-.PHONY: install  ## Install/update the local library and associated dependencies
-install:
-	pip install .
-	direnv allow .
+.PHONY: help  ## Display this message
+help:
+	@grep -E \
+		'^.PHONY: .*?## .*$$' $(MAKEFILE_LIST) | \
+		sort | \
+		awk 'BEGIN {FS = ".PHONY: |## "}; {printf "\033[36m%-19s\033[0m %s\n", $$2, $$3}'
 
 .PHONY: setup  ## Install/update the pre-commit hooks for local development
-setup: .pre-commit
+setup: check-pre-commit
 	pre-commit install --install-hooks
 	pre-commit autoupdate
 	direnv allow .
 
-.PHONY: format  ## Auto-format python source files
-format: .black .ruff
-	black $(sources)
-	ruff check --fix $(sources)
-
-.PHONY: lint  ## Lint python source files
-lint: .black .ruff
-	black $(sources) --check
-	ruff check $(sources)
-
-.PHONY: unit-test  ## Run all unit tests
-unit-test: .pytest .pytest-asyncio
-	pytest -m unit_test
-
-.PHONY: integration-test  ## Run all integration tests
-integration-test: .pytest .pytest-asyncio
-	pytest -m integration_test
-
-.PHONY: end-test  ## Run all end-to-end tests
-end-test: .pytest .pytest-asyncio
-	pytest -m end_test
+.PHONY: install  ## Install/update the local library and associated dependencies
+install: check-poetry
+	poetry install
+	direnv allow .
 
 .PHONY: clean  ## Clear local caches and build artifacts
 clean:
@@ -66,9 +31,60 @@ clean:
 	rm -rf dist
 	rm -rf site
 
-.PHONY: help  ## Display this message
-help:
-	@grep -E \
-		'^.PHONY: .*?## .*$$' $(MAKEFILE_LIST) | \
-		sort | \
-		awk 'BEGIN {FS = ".PHONY: |## "}; {printf "\033[36m%-19s\033[0m %s\n", $$2, $$3}'
+## Check that poetry is installed
+check-poetry:
+	@poetry -V || pip install poetry
+
+# ==============================================================================
+# =========================== CODE QUALITY CHECKS =============================
+# ==============================================================================
+
+.PHONY: lint  ## Lint python source files
+lint: check-black check-ruff
+	poetry run black $(sources) --check
+	poetry run ruff check $(sources)
+
+.PHONY: format  ## Auto-format python source files
+format: check-black check-ruff
+	poetry run black $(sources)
+	poetry run ruff check --fix $(sources)
+
+# ------------------------------- PRIVATE COMMANDS -------------------------------
+
+## Check that pre-commit is installed
+check-pre-commit:
+	@poetry show pre-commit || poetry add pre-commit --group dev
+
+## Check that ruff is installed
+check-ruff:
+	@poetry show ruff || poetry add ruff --group formatting
+
+## Check that black is installed
+check-black:
+	@poetry show black || poetry add black --group formatting
+
+# ==============================================================================
+# =============================== TESTING =====================================
+# ==============================================================================
+
+.PHONY: unit-test  ## Run all unit tests
+unit-test: check-pytest check-pytest-asyncio
+	poetry run pytest -m unit_test
+
+.PHONY: integration-test  ## Run all integration tests
+integration-test: check-pytest check-pytest-asyncio
+	poetry run pytest -m integration_test
+
+.PHONY: end-test  ## Run all end-to-end tests
+end-test: check-pytest check-pytest-asyncio
+	poetry run pytest -m end_test
+
+# ------------------------------- PRIVATE COMMANDS -------------------------------
+
+## Check that pytest is installed
+check-pytest:
+	@poetry show pytest || poetry add pytest --group test
+
+## Check that pytest-asyncio is installed
+check-pytest-asyncio:
+	@poetry show pytest-asyncio || poetry add pytest-asyncio --group test

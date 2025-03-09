@@ -1,7 +1,7 @@
 # https://pre-commit.com/hooks.html
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
+  rev: v5.0.0
   hooks:
   - id: no-commit-to-branch
   - id: check-yaml
@@ -10,15 +10,15 @@ repos:
   - id: trailing-whitespace
 
 # Code formatting through black
-- repo: https://github.com/google/black
-  rev: 'v0.40.2'
+- repo: https://github.com/psf/black
+  rev: 25.1.0
   hooks:
   - id: black-jupyter
     name: Uncompromising Python Code Formater
 
 # Fast Linting through ruff
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.6
+  rev: v0.9.10
   hooks:
   - id: ruff
     name: Package Formatting

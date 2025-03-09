@@ -48,3 +48,4 @@ jobs:
           if [ ${{ steps.end-test.exitcode }} -eq 5 ]; then
             echo "End-to-end test exited with code 5 (no tests collected), treating as success"
             exit 0
+          fi

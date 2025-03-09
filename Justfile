@@ -8,12 +8,11 @@ help:
 setup: check-pre-commit
 	pre-commit install --install-hooks
 	pre-commit autoupdate
-	direnv allow .
 
 # Install/update the local library and associated dependencies
-install: check-poetry
+install:
+	@poetry -V || pip install poetry
 	poetry install
-	direnv allow .
 
 # Clear local caches and build artifacts
 clean:
@@ -28,12 +27,11 @@ clean:
 	rm -rf dist
 	rm -rf site
 
-# ------------------------------- PRIVATE COMMANDS -------------------------------
-
-# Check that poetry is installed
-[private]
-check-poetry:
-	poetry -V || pip install poetry
+# Load the environment variables from the .envrc file
+load-env:
+	eval "$(direnv export bash)"
+	eval "$(direnv hook zsh)"
+	direnv allow .
 
 # ==============================================================================
 # =========================== CODE QUALITY CHECKS =============================
@@ -58,12 +56,12 @@ check-pre-commit:
 
 # Check that ruff is installed
 [private]
-check-ruff:
+check-ruff: install
 	poetry show ruff || poetry add ruff --group formatting
 
 # Check that black is installed
 [private]
-check-black:
+check-black: install
 	poetry show black || poetry add black --group formatting
 
 # ==============================================================================
@@ -86,10 +84,10 @@ e2e-test: check-pytest check-pytest-asyncio
 
 # Check that pytest is installed
 [private]
-check-pytest:
+check-pytest: install
 	poetry show pytest || poetry add pytest --group test
 
 # Check that pytest-asyncio is installed
 [private]
-check-pytest-asyncio:
+check-pytest-asyncio: install
 	poetry show pytest-asyncio || poetry add pytest-asyncio --group test

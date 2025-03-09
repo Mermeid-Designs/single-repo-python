@@ -8,16 +8,18 @@ jobs:
   main:
     name: Automatically add assignees on PRs
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Edit pull request
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_USER: ${{ github.actor }}
           PR_NUMBER: ${{ github.event.number }}
-          THIS_REPO: ${{ github.repository }}
         run: |
-          pushd ${THIS_REPO}
           gh pr edit ${PR_NUMBER} \
             --add-assignee ${GITHUB_USER}
-          popd
